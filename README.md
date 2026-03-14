@@ -2,15 +2,24 @@
 
 TwinAI is an AI-powered digital twin that mimics a user's writing style using Amazon Nova.
 
-## How it works
+## Problem
+
+People spend a lot of time replying to emails and messages.
+
+## Solution
+
+TwinAI learns a user's communication style from writing samples and generates personalized responses that sound like the user.
+
+## How It Works
 
 1. User provides writing samples
-2. TwinAI analyzes tone and style
-3. Amazon Nova generates a personalized reply
+2. TwinAI analyzes tone, vocabulary, and structure
+3. Amazon Nova generates a response in the same style
 
 ## Example
 
-Input:
+Input message:
+
 Can you send the final report today?
 
 Output:
@@ -26,3 +35,5 @@ Thanks!
 - Amazon Nova
 - Python
 - Generative AI
+
+## Repository Structure
