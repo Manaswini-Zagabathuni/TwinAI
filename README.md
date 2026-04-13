@@ -1,8 +1,8 @@
-# 🤖 TwinAI - Advanced Edition
+#  TwinAI - Advanced Edition
 
 An AI-powered writing twin that learns your communication style and generates replies that sound exactly like you. Built with Streamlit + Claude (Anthropic).
 
-## ✨ Features (vs original)
+##  Features (vs original)
 
 | Feature | Original | Advanced |
 |---|---|---|
@@ -17,7 +17,7 @@ An AI-powered writing twin that learns your communication style and generates re
 
 ---
 
-## 🚀 Deploy on Streamlit Community Cloud (Free)
+##  Deploy on Streamlit Community Cloud (Free)
 
 ### Step 1 - Push to GitHub
 ```bash
@@ -44,7 +44,7 @@ ANTHROPIC_API_KEY = "sk-ant-your-key-here"
 
 ---
 
-## 💻 Run Locally
+##  Run Locally
 
 ```bash
 pip install -r requirements.txt
@@ -53,7 +53,7 @@ streamlit run app.py
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 twinai/
