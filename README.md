@@ -27,14 +27,14 @@ git commit -m "TwinAI advanced"
 gh repo create twinai-advanced --public --push
 ```
 
-### Step 2 — Deploy
+### Step 2 - Deploy
 1. Go to [share.streamlit.io](https://share.streamlit.io)
 2. Sign in with GitHub
 3. Click **New app**
 4. Select your repo, branch `main`, file `app.py`
 5. Click **Deploy**
 
-### Step 3 — Add your API key (secrets)
+### Step 3 - Add your API key (secrets)
 In Streamlit Cloud dashboard → your app → **Settings → Secrets**, add:
 ```toml
 ANTHROPIC_API_KEY = "sk-ant-your-key-here"
