@@ -1,4 +1,4 @@
-# 🤖 TwinAI — Advanced Edition
+# 🤖 TwinAI - Advanced Edition
 
 An AI-powered writing twin that learns your communication style and generates replies that sound exactly like you. Built with Streamlit + Claude (Anthropic).
 
@@ -19,7 +19,7 @@ An AI-powered writing twin that learns your communication style and generates re
 
 ## 🚀 Deploy on Streamlit Community Cloud (Free)
 
-### Step 1 — Push to GitHub
+### Step 1 - Push to GitHub
 ```bash
 git init
 git add .
