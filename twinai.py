@@ -1,11 +1,33 @@
 import streamlit as st
 import anthropic
 import json
+import time
 from datetime import datetime
+
+# ── Model config ─────────────────────────────────────────────────────────────
+MODEL = "claude-haiku-4-5-20251001"  # Fast, reliable, less overloaded
+
+def call_claude(api_key, messages, max_tokens=800, retries=3):
+    """Call Claude with automatic retry on overload (529)."""
+    client = anthropic.Anthropic(api_key=api_key)
+    for attempt in range(retries):
+        try:
+            return client.messages.create(
+                model=MODEL,
+                max_tokens=max_tokens,
+                messages=messages
+            )
+        except anthropic.APIStatusError as e:
+            if e.status_code == 529 and attempt < retries - 1:
+                wait = 3 * (attempt + 1)
+                st.toast(f"API busy, retrying in {wait}s... (attempt {attempt+1}/{retries})", icon="⏳")
+                time.sleep(wait)
+            else:
+                raise
 
 st.set_page_config(
     page_title="TwinAI - Your AI Writing Twin",
-    page_icon="🤖",
+    page_icon="💕",
     layout="wide"
 )
 
@@ -86,24 +108,39 @@ if "style_analysis" not in st.session_state:
 # ── Header ───────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="main-header">
-    <h1>🤖 TwinAI</h1>
+    <h1>💕 TwinAI</h1>
     <p>Your AI-powered writing twin — learns your style, writes like you</p>
 </div>
 """, unsafe_allow_html=True)
 
-# ── API Key ──────────────────────────────────────────────────────────────────
+# ── API Key (reads from Streamlit secrets if available) ──────────────────────
+def get_api_key(manual_key):
+    if manual_key and manual_key.strip():
+        return manual_key.strip()
+    try:
+        return st.secrets["ANTHROPIC_API_KEY"]
+    except Exception:
+        return None
+
 with st.sidebar:
-    st.markdown("### ⚙️ Configuration")
-    api_key = st.text_input(
-        "Anthropic API Key",
-        type="password",
-        placeholder="sk-ant-...",
-        help="Get your free key at console.anthropic.com"
-    )
+    st.markdown("###  Configuration")
+    # Only show input if secret is not set
+    secret_set = "ANTHROPIC_API_KEY" in st.secrets if hasattr(st, "secrets") else False
+    if secret_set:
+        st.success(" API key loaded from secrets")
+        manual_key = ""
+    else:
+        manual_key = st.text_input(
+            "Anthropic API Key",
+            type="password",
+            placeholder="sk-ant-...",
+            help="Get your free key at console.anthropic.com"
+        )
+    api_key = get_api_key(manual_key)
     st.markdown("---")
 
     # Stats
-    st.markdown("### 📊 Your Twin Stats")
+    st.markdown("###  Your Twin Stats")
     col1, col2 = st.columns(2)
     with col1:
         st.markdown(f"""
@@ -122,7 +159,7 @@ with st.sidebar:
 
     # Style analysis display
     if st.session_state.style_analysis:
-        st.markdown("### 🎨 Detected Style")
+        st.markdown("###  Detected Style")
         analysis = st.session_state.style_analysis
         for trait in analysis.get("traits", []):
             st.markdown(f'<span class="tone-badge">{trait}</span>', unsafe_allow_html=True)
@@ -130,7 +167,7 @@ with st.sidebar:
             st.caption(analysis["summary"])
 
     st.markdown("---")
-    if st.button("🗑️ Clear All Data", use_container_width=True):
+    if st.button(" Clear All Data", use_container_width=True):
         st.session_state.writing_samples = []
         st.session_state.history = []
         st.session_state.style_analysis = None
@@ -178,14 +215,10 @@ with tab1:
     if analyze_clicked and api_key:
         with st.spinner("Analyzing your writing style..."):
             try:
-                client = anthropic.Anthropic(api_key=api_key)
                 all_samples = "\n\n---\n\n".join(
                     [s["text"] for s in st.session_state.writing_samples]
                 )
-                msg = client.messages.create(
-                    model="claude-sonnet-4-20250514",
-                    max_tokens=400,
-                    messages=[{
+                msg = call_claude(api_key, [{
                         "role": "user",
                         "content": f"""Analyze the writing style in these samples and return ONLY valid JSON with no extra text:
 {{
@@ -197,8 +230,7 @@ Traits should be short labels like: Formal, Casual, Concise, Warm, Direct, Profe
 
 Samples:
 {all_samples}"""
-                    }]
-                )
+                }], max_tokens=400)
                 raw = msg.content[0].text.strip()
                 # strip markdown fences if present
                 if raw.startswith("```"):
@@ -238,7 +270,7 @@ Samples:
 # ═══════════════════════════════════════════
 with tab2:
     if len(st.session_state.writing_samples) == 0:
-        st.warning("⬅️ Go to the **Train Your Twin** tab and add at least one writing sample first.")
+        st.warning(" Go to the **Train Your Twin** tab and add at least one writing sample first.")
     else:
         st.markdown('<div class="section-title">Message to Respond To</div>', unsafe_allow_html=True)
 
@@ -261,7 +293,7 @@ with tab2:
         with col3:
             num_variants = st.selectbox("Variants", [1, 2, 3], index=1)
 
-        generate_btn = st.button("🚀 Generate Reply", use_container_width=True,
+        generate_btn = st.button(" Generate Reply", use_container_width=True,
                                   disabled=not incoming.strip())
 
         if generate_btn:
@@ -293,12 +325,7 @@ Instructions:
 
                 with st.spinner("Your twin is writing..."):
                     try:
-                        client = anthropic.Anthropic(api_key=api_key)
-                        msg = client.messages.create(
-                            model="claude-sonnet-4-20250514",
-                            max_tokens=800,
-                            messages=[{"role": "user", "content": prompt}]
-                        )
+                        msg = call_claude(api_key, [{"role": "user", "content": prompt}])
                         result = msg.content[0].text.strip()
 
                         # Save to history
@@ -325,6 +352,11 @@ Instructions:
                                 st.code(part, language=None)
                                 st.markdown("")
 
+                    except anthropic.APIStatusError as e:
+                        if e.status_code == 529:
+                            st.error("⚠️ Anthropic servers are busy right now. Please wait 30 seconds and try again.")
+                        else:
+                            st.error(f"API error: {e}")
                     except Exception as e:
                         st.error(f"Error generating reply: {e}")
 
