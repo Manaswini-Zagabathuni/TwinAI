@@ -109,7 +109,7 @@ if "style_analysis" not in st.session_state:
 st.markdown("""
 <div class="main-header">
     <h1>💕 TwinAI</h1>
-    <p>Your AI-powered writing twin — learns your style, writes like you</p>
+    <p>Your AI-powered writing twin - learns your style, writes like you</p>
 </div>
 """, unsafe_allow_html=True)
 
