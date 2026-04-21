@@ -17,7 +17,7 @@ An AI-powered writing twin that learns your communication style and generates re
 
 ---
 
-##  Deploy on Streamlit Community Cloud (Free)
+##  Deploy on Streamlit Community Cloud
 
 ### Step 1 - Push to GitHub
 ```bash
