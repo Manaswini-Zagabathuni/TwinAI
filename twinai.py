@@ -4,7 +4,7 @@ import json
 import time
 from datetime import datetime
 
-# ── Model config ─────────────────────────────────────────────────────────────
+# Model config 
 MODEL = "claude-haiku-4-5-20251001"  # Fast, reliable, less overloaded
  
 def call_claude(api_key, messages, max_tokens=800, retries=3):
