@@ -31,7 +31,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# ── Custom CSS ──────────────────────────────────────────────────────────────
+# Custom CSS
 st.markdown("""
 <style>
     .main-header {
