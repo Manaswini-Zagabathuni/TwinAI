@@ -6,7 +6,7 @@ from datetime import datetime
 
 # ── Model config ─────────────────────────────────────────────────────────────
 MODEL = "claude-haiku-4-5-20251001"  # Fast, reliable, less overloaded
-
+ 
 def call_claude(api_key, messages, max_tokens=800, retries=3):
     """Call Claude with automatic retry on overload (529)."""
     client = anthropic.Anthropic(api_key=api_key)
