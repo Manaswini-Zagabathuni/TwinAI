@@ -173,12 +173,12 @@ with st.sidebar:
         st.session_state.style_analysis = None
         st.rerun()
 
-# ── Main layout ──────────────────────────────────────────────────────────────
+# Main layout
 tab1, tab2, tab3 = st.tabs(["✍️ Train Your Twin", "💬 Generate Reply", "📜 History"])
 
-# ═══════════════════════════════════════════
+
 # TAB 1 — Training
-# ═══════════════════════════════════════════
+
 with tab1:
     st.markdown('<div class="section-title">Add Writing Samples</div>', unsafe_allow_html=True)
     st.caption("Paste emails, Slack messages, or any text you've written. The more samples, the better your twin!")
