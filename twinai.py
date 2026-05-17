@@ -16,7 +16,7 @@ def call_claude(api_key, messages, max_tokens=800, retries=3):
                 model=MODEL,
                 max_tokens=max_tokens,
                 messages=messages
-            )
+            ) 
         except anthropic.APIStatusError as e:
             if e.status_code == 529 and attempt < retries - 1:
                 wait = 3 * (attempt + 1)
