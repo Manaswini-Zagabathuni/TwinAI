@@ -3,7 +3,6 @@ import anthropic
 import json
 import time
 from datetime import datetime
-
 # Model config 
 MODEL = "claude-haiku-4-5-20251001"  # Fast, reliable, less overloaded
  
