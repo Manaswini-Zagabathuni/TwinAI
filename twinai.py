@@ -113,6 +113,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── API Key (reads from Streamlit secrets if available) ──────────────────────
+
 def get_api_key(manual_key):
     if manual_key and manual_key.strip():
         return manual_key.strip()
